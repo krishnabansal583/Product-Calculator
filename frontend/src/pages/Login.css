@@ -1,75 +1,107 @@
 
 .login-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    width: 100vw;
-    background: linear-gradient(135deg, #6a11cb, #2575fc);
-    font-family: 'Arial', sans-serif;
-  }
-  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-image: url('/A photo of a pharmacy with a variety of medication.webp');
+  background-size: cover;
+  background-color: rgba(96, 92, 97, 0.5); 
+  background-position: center;
+  font-family: 'Poppins', sans-serif;
+}
 
-  .login-container {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 15px;
-    padding: 30px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-  }
+.login-container {
+  background: rgba(217, 207, 219, 0.7);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.9);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
 
-  .login-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-  
-  .login-form input {
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.8);
-    font-size: 16px;
-    outline: none;
-    transition: background 0.3s ease;
-  }
-  
-  .login-form input:focus {
-    background: rgba(255, 255, 255, 1);
-  }
-  
-  .login-form button {
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    background: #2575fc;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  
-  .login-form button:hover {
-    background: #1a5bbf;
-  }
-  
-  
-  .register-link {
-    margin-top: 15px;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 14px;
-  }
-  
-  .register-link a {
-    color: #6a11cb;
-    text-decoration: none;
-    font-weight: bold;
-  }
-  
-  .register-link a:hover {
-    text-decoration: underline;
-  }
+.login-container h1 {
+  color: #433878;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.login-form input {
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #7e60bf;
+  font-size: 16px;
+  outline: none;
+  width: 375px;
+}
+
+.login-form input:focus {
+  border-color: #433878;
+}
+
+.password-input {
+  position: relative;
+ 
+}
+
+.toggle-password {
+  position: absolute;
+  right: 0px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.login-form button {
+  background-color: #7e60bf;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-form button:disabled {
+  background-color: #a8a8a8;
+  cursor: not-allowed;
+}
+
+.login-form button:hover:not(:disabled) {
+  background-color: #433878;
+}
+
+.register-link {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #433878;
+}
+
+.register-link a {
+  color: #7e60bf;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+}
+
+.error-message {
+  color: #cc1c1c;
+  font-size: 18px;
+  margin-bottom: 10px;
+}

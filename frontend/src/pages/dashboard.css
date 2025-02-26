@@ -2,70 +2,128 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-family: Arial, sans-serif;
-}
-.main-content {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 1200px;
+  justify-content: flex-start;
+  font-family: 'Poppins', sans-serif;
+  background-image: url('/A photo of a pharmacy with a variety of medication.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  position: relative;
 }
 
-.product-section {
-  flex: 2;
+.dashboard-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(96, 92, 97, 0.8); 
+  z-index: 1;
+}
+
+.heading {
+  background-color: #433878;
+  padding: 15px 20px;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  display: flex;
+  justify-content:space-between;
+  align-items: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.heading h1 {
+  color: white;
+  margin: 0;
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.user-name {
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
   margin-right: 20px;
 }
 
-.price-calculator {
-  width: 100%;
-  margin-bottom: 20px;
-  flex: 1;
-
-  background: #fff;
+.logout-btn {
+  background-color: #ffe1ff;
+ margin-right: 80px;
+  color: #433878;
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: bold;
   border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  border: 1px solid #433878;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
+
+.logout-btn:hover {
+  background-color: #f4f4f9;
+}
+
+.main-content {
+  display: flex;
+  width: 100%;
+  margin-top: 100px;
+  max-width: 1250px;
+  gap: 30px;
+  position: relative;
+  z-index: 2;
+}
+
+.price-calculator {
+  flex: 4;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
 .calculator-header {
   display: flex;
   justify-content: space-between;
   font-weight: bold;
-  font-size: 15px;
+  font-size: 16px;
   padding-bottom: 10px;
-  /* margin-bottom: 10px; */
+  border-bottom: 2px solid #eee;
 }
+
 .calculator-header h3 {
-  padding: 10px;
   flex: 1;
   text-align: center;
-  margin: 0px;
-  background-color: #7e60bf;
-  color: white;
+  margin: 0;
+  color: #433878;
 }
 
 .calculator-content {
   display: flex;
   flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
 }
 
-.calculator-content p {
-  font-size: 16px;
-  margin-bottom: 10px;
-}
 .selected-product {
   display: flex;
   justify-content: space-between;
-  padding: 8px 0;
-  
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
 }
+
 .selected-product p {
   flex: 1;
   color: #433878;
-  font-size: 18px;
+  font-size: 16px;
   text-align: center;
   margin: 0;
 }
+
 .total-price {
   margin-top: 20px;
   padding-top: 10px;
@@ -76,263 +134,137 @@
   font-size: 16px;
   margin-bottom: 10px;
   text-align: center;
+  font-weight: bold;
+  color: #433878;
+}
+
+.product-section {
+  flex: 6;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  padding: 20px;
 }
 
 .search-container {
   position: relative;
   margin-bottom: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .search-bar {
-  width: 100%;
-  max-width: 900px;
-  padding: 10px;
-  border-radius: 15px;
+  width: 95%;
+  padding: 10px 10px ;
+  border-radius: 25px;
   border: 1px solid #7e60bf;
-  font-size: 18px;
+  font-size: 16px;
+  outline: none;
 }
+
 .search-icon {
   position: absolute;
-  right: 160px;
+  right: 40px;
   top: 50%;
   transform: translateY(-50%);
   font-size: 18px;
   color: #7e60bf;
   cursor: pointer;
 }
-/* WhatsApp Icon Button Style */
+
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.product-table th,
+.product-table td {
+  padding: 12px;
+  text-align: center;
+  border: 1px solid #eee;
+}
+
+.product-table th {
+  background-color: #7e60bf;
+  color: white;
+  font-weight: bold;
+}
+
+.product-table tr:hover {
+  background-color: #f9f9f9;
+}
+
+.product-name-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkbox {
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+.product-name {
+  cursor: pointer;
+  color: #433878;
+  font-size: 16px;
+  font-weight: 500;
+}
+
 .whatsapp-btn {
   background: none;
   border: none;
   cursor: pointer;
   padding: 5px;
+  transition: opacity 0.3s ease;
 }
 
 .whatsapp-btn:hover {
   opacity: 0.8;
 }
 
-.product-table th,
-.product-table td {
-    background-color:white;
-  padding: 10px;
-  text-align: center;
-  border: 1px solid #ddd;
-  font-size: 16px;
-  border: 1px solid #7e60bf;
-}
-
-.product-table th {
-  background-color:#7e60bf;
-    color: white;
-  font-weight: bold;
-  border: 3px solid #7e60bf;
-}
-
-/* Table Style */
-.product-table {
-  width: 100%;
-  border-collapse: collapse;
-  border: 3px solid #7e60bf;
-   
-
-  
-  margin-top: 20px;
-}
-/* Increase the size of checkboxes */
-.checkbox {
-    transform: scale(1.4); /* Adjust the scale value as needed */
-    margin: 0 auto; /* Center the checkbox in the cell */
-    cursor: pointer;
-  }
-
-
-/* Button Styles */
-button {
-  padding: 8px 12px;
-  border: none;
-  background-color: #007bff;
-  color: white;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-/* Popup Style for Product Details */
-.product-popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.popup-content {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 5px;
-  width: 300px;
-  max-width: 100%;
-  overflow-y: auto;
-}
-
-.dashboard-container .heading {
-  background-color: #433878;
-
-  padding: 5px;
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
-h1 {
-  color: white;
-  margin: 0;
-  padding: 10px;
-  font-size: 27px;
-}
-
-
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .search-bar {
-    width: 80%;
-  }
-
-  .product-table th,
-  .product-table td {
-    font-size: 12px;
-    padding: 8px;
-  }
-
-  .popup-content {
-    width: 90%;
-  }
-}
-
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f9;
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.search-bar:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
-
-.product-table tr:hover {
-  background-color: #f1f1f1;
-}
-
-
-.product-popup {
+.popup-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 4;
 }
 
 .popup-content {
-  background-color: #fff;
+  background: white;
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
   max-width: 500px;
   width: 100%;
-  text-align: center;
+  position: relative;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
-.popup-content h2 {
-  margin-top: 0;
-  color: #333;
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.popup-content p {
-  margin: 10px 0;
-  color: #555;
+.close-btn:hover {
+  background: #ff1a1a;
 }
-
-
-
-@media (max-width: 768px) {
-  .dashboard-container {
-    padding: 10px;
-  }
-
-  .search-bar {
-    width: 100%;
-  }
-
-  .product-table th,
-  .product-table td {
-    padding: 8px;
-  }
-
-  .popup-content {
-    width: 90%;
-  }
-}
-
-.popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .popup-content {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    max-width: 500px;
-    width: 100%;
-    position: relative;
-  }
-  
-  .close-btn {
-    position: absolute;
-    background-color: #007bff;
-    top: 10px;
-    right: 10px;
-   
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-  }
-  
-  .product-name {
-    cursor: pointer;
-    color: #433878;
-    text-decoration: none;
-    font-size: large;
-    
-  }

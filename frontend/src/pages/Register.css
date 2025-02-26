@@ -1,82 +1,92 @@
-
+/* Register.css */
 .register-page {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
-    width: 100vw;
-    background: linear-gradient(135deg, #6a11cb, #2575fc);
-    font-family: 'Arial', sans-serif;
-}
-
-
-.register-container {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 15px;
-    padding: 30px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    min-height: 100vh;
+    background-image: url('/A photo of a pharmacy with a variety of medication.webp');
+    background-size: cover;
+    background-color: rgba(96, 92, 97, 0.5); /* Light overlay for better readability */
+    background-position: center;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .register-container {
+    background: rgba(217, 207, 219, 0.7);
+    padding: 40px; /* Reduced padding */
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.9);
+    max-width: 500px;
     width: 100%;
-    max-width: 400px;
     text-align: center;
-}
-
-
-.register-container form {
+  }
+  
+  .register-container h1 {
+    color: #433878;
+    margin-bottom: 20px; /* Reduced margin */
+    font-size: 24px; /* Reduced font size */
+    font-weight: 600;
+  }
+  
+  .register-form {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-}
-
-.register-container input {
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.8);
-    font-size: 16px;
+    gap: 10px; /* Reduced gap between inputs */
+  }
+  
+  .register-form input {
+    padding: 10px; /* Reduced padding */
+    border-radius: 12px;
+    border: 1px solid #7e60bf;
+    font-size: 16px; /* Reduced font size */
     outline: none;
-    transition: background 0.3s ease;
-}
-
-.register-container input:focus {
-    background: rgba(255, 255, 255, 1);
-}
-
-.register-container button {
-    padding: 12px;
+    width: 100%;
+  }
+  
+  .register-form input:focus {
+    border-color: #433878;
+  }
+  
+  .register-form button {
+    padding: 10px; /* Reduced padding */
     border: none;
-    border-radius: 8px;
-    background: #2575fc;
+    border-radius: 5px;
+    background: #7e60bf;
     color: white;
-    font-size: 16px;
+    font-size: 14px; /* Reduced font size */
+    font-weight: bold;
     cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-.register-container button:hover {
-    background: #1a5bbf;
-}
-
-.register-container h1{
-    color: black;
-    margin-top: -10px;
-
-}
-
-
-.login-link {
-    margin-top: 15px;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 14px;
-}
-
-.login-link a {
-    color: #6a11cb;
+    transition: background-color 0.3s ease;
+  }
+  
+  .register-form button:disabled {
+    background-color: #a8a8a8;
+    cursor: not-allowed;
+  }
+  
+  .register-form button:hover:not(:disabled) {
+    background-color: #433878;
+  }
+  
+  .login-link {
+    margin-top: 10px; /* Reduced margin */
+    font-size: 13px; /* Reduced font size */
+    color: #433878;
+  }
+  
+  .login-link a {
+    color: #7e60bf;
     text-decoration: none;
     font-weight: bold;
-}
-
-.login-link a:hover {
+  }
+  
+  .login-link a:hover {
     text-decoration: underline;
-}
+  }
+  
+  
+.error-message {
+    color: #cc1c1c;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }

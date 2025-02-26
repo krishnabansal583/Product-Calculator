@@ -34,10 +34,23 @@ exports.loginUser = async (req, res) => {
     const payload = { user: { id: user.id } };
     jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' }, (err, token) => {
       if (err) throw err;
-      res.json({ token });
+
+      // Return the token and user data (excluding the password)
+      res.json({
+        token,
+        user: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          mobile: user.mobile,
+          city: user.city,
+          state: user.state,
+          pincode: user.pincode,
+        },
+      });
     });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
   }
-}
+};

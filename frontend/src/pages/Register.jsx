@@ -1,9 +1,7 @@
-
-
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
-import './Register.css'; // Import the new CSS file
+import './Register.css'; // Import the CSS file
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -15,23 +13,46 @@ const Register = () => {
     state: '',
     pincode: '',
   });
+  const [error, setError] = useState(''); // State for error messages
+  const [loading, setLoading] = useState(false); // State for loading
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Form validation
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.mobile ||
+      !formData.password ||
+      !formData.city ||
+      !formData.state ||
+      !formData.pincode
+    ) {
+      setError('Please fill in all fields.');
+      return;
+    }
+
+    setLoading(true); // Start loading
+    setError(''); // Clear previous errors
+
     try {
       await axios.post('http://localhost:5000/api/auth/register', formData);
-      navigate('/login');
+      navigate('/login'); // Redirect to login page after successful registration
     } catch (err) {
-      console.error(err.response?.data?.msg || 'Registration failed');
+      setError(err.response?.data?.msg || 'Registration failed. Please try again.');
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
   return (
     <div className="register-page">
       <div className="register-container">
-        <h1>Register Page</h1>
-        <form onSubmit={handleSubmit}>
+        <h1>Register</h1>
+        {error && <p className="error-message">{error}</p>} {/* Display error message */}
+        <form onSubmit={handleSubmit} className="register-form">
           <input
             type="text"
             placeholder="Name"
@@ -74,7 +95,9 @@ const Register = () => {
             value={formData.pincode}
             onChange={(e) => setFormData({ ...formData, pincode: e.target.value })}
           />
-          <button type="submit">Register</button>
+          <button type="submit" disabled={loading}>
+            {loading ? 'Registering...' : 'Register'} {/* Disable button during loading */}
+          </button>
         </form>
         <p className="login-link">
           Already have an account? <Link to="/login">Login here</Link>
