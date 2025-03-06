@@ -1,0 +1,177 @@
+/* .users-page {
+    font-family: 'Poppins', sans-serif;
+    padding: 20px;
+    max-width: 100%;
+    margin: 0 auto;
+    background-image: url('/A photo of a pharmacy with a variety of medication.webp');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .users-page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 1;
+  }
+  
+  .user-list-section {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-sizing: border-box;
+    max-height: 400px;
+    overflow-y: auto;
+    width: 90%;
+    max-width: 800px;
+  }
+  
+  .user-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .user-list li {
+    background: rgba(249, 249, 249, 0.9);
+    border: 1px solid rgba(221, 221, 221, 0.5);
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 8px;
+  }
+  
+  .user-info {
+    flex: 1;
+    font-size: 14px;
+  }
+  
+  .user-info strong {
+    font-size: 16px;
+    color: #433878;
+  }
+  
+  .user-actions button {
+    background: #7e60bf;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 12px;
+    transition: background 0.3s ease;
+  }
+  
+  .user-actions button:hover {
+    background: #433878;
+  } */
+  .users-page {
+    font-family: 'Poppins', sans-serif;
+    padding: 20px;
+    max-width: 100%;
+    margin: 0 auto;
+    background-image: url('/A photo of a pharmacy with a variety of medication.webp');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .users-page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 1;
+  }
+  
+  .main-conten {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+    z-index: 2;
+    margin-top: 80px;
+    width: 90%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .user-list-section {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-sizing: border-box;
+    max-height: 400px;
+    overflow-y: auto;
+    width: 90%;
+    max-width: 800px;
+    margin: 0 auto; /* Center the section */
+  }
+  
+  .user-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .user-list li {
+    background: rgba(249, 249, 249, 0.9);
+    border: 1px solid rgba(221, 221, 221, 0.5);
+    padding: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 8px;
+  }
+  
+  .user-info {
+    flex: 1;
+    font-size: 14px;
+  }
+  
+  .user-info strong {
+    font-size: 16px;
+    color: #433878;
+  }
+  
+  .user-actions button {
+    background: #7e60bf;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 12px;
+    transition: background 0.3s ease;
+  }
+  
+  .user-actions button:hover {
+    background: #433878;
+  }

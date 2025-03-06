@@ -24,33 +24,37 @@ exports.registerUser = async (req, res) => {
 // Login User
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
+
   try {
+    // Find the user by email
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ msg: 'Invalid Credentials' });
+    if (!user) {
+      return res.status(400).json({ msg: 'User not found' });
+    }
 
+    // Check if the password is correct
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ msg: 'Invalid Credentials' });
+    if (!isMatch) {
+      return res.status(400).json({ msg: 'Invalid credentials' });
+    }
 
-    const payload = { user: { id: user.id } };
-    jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' }, (err, token) => {
-      if (err) throw err;
+    // Generate a JWT token
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: '1h',
+    });
 
-      // Return the token and user data (excluding the password)
-      res.json({
-        token,
-        user: {
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-          mobile: user.mobile,
-          city: user.city,
-          state: user.state,
-          pincode: user.pincode,
-        },
-      });
+    // Return the token and user data (including userId)
+    res.json({
+      token,
+      user: {
+        _id: user._id, // Include userId
+        name: user.name,
+        email: user.email,
+        state: user.state,
+      },
     });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server Error');
+    res.status(500).send('Server error');
   }
 };

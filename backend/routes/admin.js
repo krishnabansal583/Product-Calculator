@@ -1,15 +1,27 @@
+
 const express = require('express');
 const router = express.Router();
-const { approveUser, addProduct, updateProduct, deleteProduct, getProducts, getProductById, getUsers, getUserById } = require('../controllers/adminController');
+const { approveUser, addProduct, getAllProducts, getProductById, updateProduct, deleteProduct, addMultipleProductsFromFile, getAllUsers, getProductState, getUserState } = require('../controllers/adminController');
+const multer = require('multer');
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 router.put('/approve-user/:id', approveUser);
 router.post('/add-product', addProduct);
+
+router.get('/get-all-products', getAllProducts);
+router.post('add-product', addProduct);
+router.get('/get-product/:id', getProductById);
 router.put('/update-product/:id', updateProduct);
 router.delete('/delete-product/:id', deleteProduct);
-router.get('/products', getProducts);
-router.get('/products/:id', getProductById);
-router.get('/users', getUsers);
-router.get('/users/:id', getUserById);
+
+
+// Add Multiple Products via File Upload
+router.post('/add-products-from-file', upload.single('file'), addMultipleProductsFromFile);
+
+// New route for getting all users
+router.get('/get-all-users', getAllUsers);
+router.get('/user-state/:userId', getUserState);
 
 
 module.exports = router;

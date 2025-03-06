@@ -1,13 +1,25 @@
+
 const mongoose = require('mongoose');
 
-const ProductSchema = new mongoose.Schema({
-  productName: { type: String, required: true },
+const productSchema = new mongoose.Schema({
+  // Existing fields
+  productName: { type: String, required: true }, // Same as testProfileName
   b2bPrice: { type: Number, required: true },
   mrp: { type: Number, required: true },
-  sampleType: { type: String },
-  fastingRequired: { type: Boolean },
-  reportingTAT: { type: String },
-  productImage: { type: String }, // URL to PDF/JPG
+  sampleType: { type: String, required: true },
+  fastingRequired: { type: Boolean, required: true },
+  reportingTAT: { type: String, required: true }, // Same as tat
+  productImage: { type: String }, // Same as imageUrl
+
+  // New fields
+  srNo: { type: Number }, // Sr No
+  testCode: { type: String }, // Test code
+  category: { type: String }, // Catagory
+  labPartner: { type: String }, // Lab Partner
+  premiumMinus5: { type: Number }, // -5 Premium
+  premiumROI: { type: Number }, // ROI Premium
+  premium5: { type: Number }, // 5 Premium
+  processLocation: { type: String }, // Process Location
 });
 
-module.exports = mongoose.model('Product', ProductSchema);
+module.exports = mongoose.model('Product', productSchema);
