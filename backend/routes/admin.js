@@ -1,8 +1,9 @@
 
 const express = require('express');
 const router = express.Router();
-const { approveUser, addProduct, getAllProducts, getProductById, updateProduct, deleteProduct, addMultipleProductsFromFile, getAllUsers, getProductState, getUserState } = require('../controllers/adminController');
+const { approveUser, addProduct, getAllProducts, getProductById, updateProduct, deleteProduct, addMultipleProductsFromFile, getAllUsers, getUserState, generateInvoice } = require('../controllers/adminController');
 const multer = require('multer');
+
 
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -22,6 +23,7 @@ router.post('/add-products-from-file', upload.single('file'), addMultipleProduct
 // New route for getting all users
 router.get('/get-all-users', getAllUsers);
 router.get('/user-state/:userId', getUserState);
+router.post("/generate-invoice", generateInvoice);
 
 
 module.exports = router;

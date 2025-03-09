@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaSearch, FaWhatsapp } from "react-icons/fa";
+import { FaSearch, FaWhatsapp, FaBell } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import "./dashboard.css";
 import statesData from "../statesData.js";
-import html2canvas from "html2canvas";
 
 const Dashboard = () => {
   const [products, setProducts] = useState([]);
@@ -13,13 +12,16 @@ const Dashboard = () => {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [userName, setUserName] = useState("");
-  const [userState, setUserState] = useState(""); // Add userState to state
+  const [userState, setUserState] = useState("");
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserState = async () => {
       try {
-        const userId = localStorage.getItem("userId"); // Get userId from localStorage
+        const userId = localStorage.getItem("userId");
         if (!userId) {
           throw new Error("User ID not found in localStorage");
         }
@@ -32,7 +34,7 @@ const Dashboard = () => {
             },
           }
         );
-        setUserState(res.data.state); // Save user's state
+        setUserState(res.data.state);
       } catch (err) {
         console.error("Failed to fetch user state", err);
       }
@@ -49,8 +51,33 @@ const Dashboard = () => {
       }
     };
 
+    const fetchNotifications = async () => {
+      try {
+        const userId = localStorage.getItem("userId");
+        if (!userId) return;
+
+        const res = await axios.get(
+          `http://localhost:5000/api/notifications/user/${userId}`,
+          {
+            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          }
+        );
+        
+        setNotifications(res.data);
+        // Count unread notifications
+        const unread = res.data.filter(notif => !notif.read).length;
+        setUnreadCount(unread);
+      } catch (err) {
+        console.error("Failed to fetch notifications", err);
+      }
+    };
+
     fetchUserState();
     fetchProducts();
+    fetchNotifications();
+
+    // Set up polling for new notifications (every 30 seconds)
+    const notificationInterval = setInterval(fetchNotifications, 30000);
 
     // Retrieve user name from localStorage
     const userData = localStorage.getItem("user");
@@ -75,16 +102,20 @@ const Dashboard = () => {
         console.error("Failed to parse selected products:", error);
       }
     }
+
+    return () => {
+      clearInterval(notificationInterval);
+    };
   }, []);
 
   // Determine the pricing category based on user's state
   const getPricingCategory = () => {
     const stateInfo = statesData.find(
-      (s) => s.stateName.toLowerCase() === userState.toLowerCase() // Case-insensitive comparison
+      (s) => s.stateName.toLowerCase() === userState.toLowerCase()
     );
 
     if (!stateInfo) {
-      return ""; // Default category
+      return "";
     }
 
     switch (stateInfo.pricingSlab) {
@@ -103,9 +134,10 @@ const Dashboard = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    localStorage.removeItem("selectedProducts"); // Clear selected products
+    localStorage.removeItem("selectedProducts");
     navigate("/login");
   };
+
   const filteredProducts = products.filter((product) => {
     const searchLower = searchQuery.toLowerCase();
     return (
@@ -113,9 +145,10 @@ const Dashboard = () => {
       product.sampleType?.toLowerCase().includes(searchLower) ||
       product.reportingTAT?.toLowerCase().includes(searchLower) ||
       product.fastingRequired?.toString().toLowerCase().includes(searchLower) ||
-      product.testCode?.toLowerCase().includes(searchLower) // Add test code to search criteria
+      product.testCode?.toLowerCase().includes(searchLower)
     );
   });
+
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
@@ -129,7 +162,6 @@ const Dashboard = () => {
       } else {
         updatedSelectedProducts = [...prev, product];
       }
-      // Save to localStorage
       localStorage.setItem(
         "selectedProducts",
         JSON.stringify(updatedSelectedProducts)
@@ -137,13 +169,13 @@ const Dashboard = () => {
       return updatedSelectedProducts;
     });
   };
+
   const handleWhatsAppShareTotal = () => {
     if (selectedProducts.length === 0) {
       alert("No products selected to share.");
       return;
     }
 
-    // Construct the message
     let message = `*Total Price Details:*\n\n`;
     message += `*Selected Products:*\n`;
     selectedProducts.forEach((product) => {
@@ -152,13 +184,12 @@ const Dashboard = () => {
     message += `\n*Total B2B Price:* ₹${totalB2BPrice.toFixed(2)}\n`;
     message += `*Total MRP Price:* ₹${totalMRPPrice.toFixed(2)}\n`;
 
-    // Encode the message for WhatsApp
     const encodedMessage = encodeURIComponent(message);
     const whatsappLink = `https://wa.me/?text=${encodedMessage}`;
 
-    // Open the WhatsApp link
     window.open(whatsappLink, "_blank");
   };
+
   const handleProductNameClick = (product) => {
     setSelectedProduct({
       ...product,
@@ -192,6 +223,61 @@ const Dashboard = () => {
     window.open(whatsappLink, "_blank");
   };
 
+  const toggleNotifications = () => {
+    setShowNotifications(!showNotifications);
+    
+    // If opening notifications, mark them as read
+    if (!showNotifications && unreadCount > 0) {
+      markNotificationsAsRead();
+    }
+  };
+
+  const markNotificationsAsRead = async () => {
+    try {
+      const userId = localStorage.getItem("userId");
+      if (!userId) return;
+
+      // Call API to mark notifications as read
+      await axios.put(
+        `http://localhost:5000/api/notifications/mark-read/${userId}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+
+      // Update local state
+      setNotifications(prev => 
+        prev.map(notif => ({ ...notif, read: true }))
+      );
+      setUnreadCount(0);
+    } catch (err) {
+      console.error("Failed to mark notifications as read", err);
+    }
+  };
+
+  const handleViewInvoice = (invoice) => {
+    // You could navigate to an invoice view page or show details in a modal
+    console.log("Viewing invoice:", invoice);
+    // Example:
+    // navigate(`/view-invoice/${invoice.invoiceNo}`);
+    
+    // For now, just show a modal with invoice details
+    // TODO: Implement a proper invoice viewer
+    alert(`Invoice #${invoice.invoiceNo} details would be displayed here`);
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
   const totalB2BPrice = selectedProducts.reduce(
     (sum, p) => sum + parseFloat(p[pricingCategory]),
     0
@@ -200,13 +286,14 @@ const Dashboard = () => {
     (sum, p) => sum + parseFloat(p.mrp),
     0
   );
+
   useEffect(() => {
     const searchBar = document.getElementById("search-bar");
     if (window.innerWidth <= 480) {
       searchBar.placeholder = "search";
     } else {
       searchBar.placeholder =
-        "Search by product name, test code, or other details"; // Restore original placeholder for larger screens
+        "Search by product name, test code, or other details";
     }
 
     const handleResize = () => {
@@ -230,9 +317,47 @@ const Dashboard = () => {
       <div className="heading">
         {userName && <span className="user-name">Welcome, {userName}</span>}
         <h1>Product Price Calculator</h1>
-        <button className="logout-btn" onClick={handleLogout}>
-          Logout
-        </button>
+        <div className="header-actions">
+          <div className="notification-container">
+            <button className="notification-btn" onClick={toggleNotifications}>
+              <FaBell size={20} />
+              {unreadCount > 0 && <span className="notification-badge">{unreadCount}</span>}
+            </button>
+            
+            {showNotifications && (
+              <div className="notifications-dropdown">
+                <h3>Notifications</h3>
+                <div className="notifications-list">
+                  {notifications.length === 0 ? (
+                    <div className="no-notifications">No notifications yet</div>
+                  ) : (
+                    notifications.map((notification) => (
+                      <div 
+                        key={notification._id} 
+                        className={`notification-item ${!notification.read ? 'unread' : ''}`}
+                      >
+                        <div className="notification-title">{notification.title}</div>
+                        <div className="notification-message">{notification.message}</div>
+                        <div className="notification-date">{formatDate(notification.createdAt)}</div>
+                        {notification.type === 'invoice' && notification.data && (
+                          <button 
+                            className="view-invoice-btn"
+                            onClick={() => handleViewInvoice(notification.data)}
+                          >
+                            View Invoice
+                          </button>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+          <button className="logout-btn" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
       </div>
 
       <div className="main-content">
@@ -270,7 +395,7 @@ const Dashboard = () => {
           </div>
         </div>
         {/* Right Section - Product List */}
-        <div className="product-section">
+        <div className="user-product-section">
           <div className="search-container">
             <input
               type="text"
@@ -283,8 +408,8 @@ const Dashboard = () => {
             <FaSearch className="search-icon" />
           </div>
 
-          <div className="product-table-container">
-            <table className="product-table">
+          <div className="user-product-table-container">
+            <table className="user-product-table">
               <thead>
                 <tr>
                   <th>Product Name</th>

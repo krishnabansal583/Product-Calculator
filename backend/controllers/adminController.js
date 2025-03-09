@@ -1,9 +1,7 @@
 const User = require('../models/User');
+const Product = require('../models/Product');
 const xlsx = require('xlsx');
 const csv = require('papaparse');
-
-
-const Product = require('../models/Product');
 
 // Approve User
 exports.approveUser = async (req, res) => {
@@ -15,8 +13,6 @@ exports.approveUser = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
-
-
 
 exports.addProduct = async (req, res) => {
   const {
@@ -199,42 +195,6 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
-// exports.getProductState = async (req, res) => {
-//   try {
-//     const { state } = req.params;
-
-//     // Get the pricing slab for the state
-//     const stateData = await state.findOne({ stateName: state });
-
-//     if (!stateData) {
-//       return res.status(404).json({ message: 'State not found' });
-//     }
-
-//     const pricingSlab = stateData.pricingSlab;
-
-//     // Fetch all products
-//     const products = await Product.find();
-
-//     // Map the correct B2P price based on state pricing slab
-//     const updatedProducts = products.map((product) => {
-//       let b2pPrice;
-//       if (pricingSlab.includes('-5%')) {
-//         b2pPrice = product.premiumMinus5;
-//       } else if (pricingSlab.includes('ROI')) {
-//         b2pPrice = product.premiumROI;
-//       } else if (pricingSlab.includes('5%')) {
-//         b2pPrice = product.premium5;
-//       }
-//       return { ...product._doc, b2pPrice };
-//     });
-
-//     res.json(updatedProducts);
-//   } catch (error) {
-//     res.status(500).json({ message: 'Server error', error });
-//   }
-// };
-
-
 exports.getUserState = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -250,6 +210,57 @@ exports.getUserState = async (req, res) => {
     res.json({ state: user.state });
   } catch (error) {
     console.error('Error in getUserState:', error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+exports.generateInvoice = async (req, res) => {
+  try {
+    const { userId, products } = req.body;
+
+    // Fetch user details
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ msg: 'User not found' });
+
+    // Calculate total amount
+    let totalAmount = 0;
+    const productDetails = await Promise.all(products.map(async (product) => {
+      const { productId, quantity, tax, additionalCharges, taxAmount } = product;
+      const productData = await Product.findById(productId);
+      if (!productData) return res.status(404).json({ msg: 'Product not found' });
+
+      const price = productData.b2bPrice;
+      
+      // Use the pre-calculated tax amount from frontend or calculate it here
+      const actualTaxAmount = taxAmount || (price * quantity * tax / 100);
+      
+      const total = (price * quantity) + actualTaxAmount + additionalCharges;
+      totalAmount += total;
+
+      return {
+        productName: productData.productName,
+        quantity,
+        price,
+        tax: `${tax}%`, // Store as percentage for display
+        taxAmount: actualTaxAmount, // Store the actual amount for calculations
+        additionalCharges,
+        totalAmount: total,
+      };
+    }));
+
+    // Create invoice details
+    const invoice = {
+      invoiceNo: `INV-${Math.floor(Math.random() * 1000000)}`,
+      date: new Date().toISOString(),
+      userName: user.name,
+      email: user.email,
+      products: productDetails,
+      totalAmount,
+    };
+
+    res.status(200).json({ msg: 'Invoice generated successfully', invoice });
+  } catch (error) {
+    console.error('Error in generateInvoice:', error);
     res.status(500).json({ message: 'Server error', error });
   }
 };

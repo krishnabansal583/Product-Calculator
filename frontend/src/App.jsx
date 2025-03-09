@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import Users from './pages/Users';
 import Products from './pages/Products';
+import GenerateInvoice from './components/GenerateInvoice';
 
 function App() {
   return (
@@ -16,6 +17,8 @@ function App() {
         <Route path='/adminDashboard' element={<AdminDashboard />} />
         <Route path="/admin/users" element={<Users />} />
         <Route path="/admin/products" element={<Products />} />
+        <Route path="/generate-invoice" element={<GenerateInvoice />} />
+
         <Route path="/" element={<Login />} /> {/* Default route */}
       </Routes>
     </Router>

@@ -43,7 +43,7 @@ exports.loginUser = async (req, res) => {
       expiresIn: '1h',
     });
 
-    // Return the token and user data (including userId)
+    // Return the token and user data (including userId) 
     res.json({
       token,
       user: {
