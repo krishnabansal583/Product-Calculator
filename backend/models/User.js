@@ -9,6 +9,7 @@ const UserSchema = new mongoose.Schema({
   state: { type: String, required: true },
   pincode: { type: String, required: true },
   isApproved: { type: Boolean, default: false },
+  role: { type: String, enum: ['user', 'admin'], default: 'user' }
 });
 
 module.exports = mongoose.model('User', UserSchema);

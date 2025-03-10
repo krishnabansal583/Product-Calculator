@@ -22,6 +22,7 @@ exports.registerUser = async (req, res) => {
 };
 
 // Login User
+// Login User
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -38,19 +39,26 @@ exports.loginUser = async (req, res) => {
       return res.status(400).json({ msg: 'Invalid credentials' });
     }
 
+    // Check if user is approved (for regular users)
+    if (!user.isApproved && user.role !== 'admin') {
+      return res.status(400).json({ msg: 'Your account is pending approval' });
+    }
+
     // Generate a JWT token
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
 
-    // Return the token and user data (including userId) 
+    // Return the token and user data
     res.json({
       token,
       user: {
-        _id: user._id, // Include userId
+        _id: user._id,
         name: user.name,
         email: user.email,
         state: user.state,
+        role: user.role,
+        isApproved: user.isApproved
       },
     });
   } catch (err) {

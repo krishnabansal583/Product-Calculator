@@ -156,10 +156,11 @@ const AdminDashboard = () => {
   };
 
   const handleLogout = () => {
-    // Implement logout logic here
-    alert('Logged out successfully!');
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("selectedProducts");
+    navigate("/login");
   };
-
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
