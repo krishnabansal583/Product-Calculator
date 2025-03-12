@@ -15,6 +15,7 @@ const Dashboard = () => {
   const [userState, setUserState] = useState("");
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [unreadCount, setUnreadCount] = useState(0);
   const navigate = useNavigate();
 
@@ -39,8 +40,8 @@ const Dashboard = () => {
         console.error("Failed to fetch user state", err);
       }
     };
-
     const fetchProducts = async () => {
+      setIsLoading(true);
       try {
         const res = await axios.get("http://localhost:5000/api/products", {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -48,6 +49,8 @@ const Dashboard = () => {
         setProducts(res.data);
       } catch (err) {
         console.error(err.response?.data?.msg || "Failed to fetch products");
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -256,15 +259,30 @@ const Dashboard = () => {
     }
   };
 
-  const handleViewInvoice = (invoice) => {
-    // You could navigate to an invoice view page or show details in a modal
-    console.log("Viewing invoice:", invoice);
-    // Example:
-    // navigate(`/view-invoice/${invoice.invoiceNo}`);
+  // Update this function in Dashboard.jsx
+  const handleViewInvoice = (notification) => {
+    if (notification && notification.invoiceNo) {
+      navigate(`/view-invoice/${notification.invoiceNo}`);
+      return;
+    }
     
-    // For now, just show a modal with invoice details
-    // TODO: Implement a proper invoice viewer
-    alert(`Invoice #${invoice.invoiceNo} details would be displayed here`);
+    // Check if notification.data is the invoice
+    if (notification && notification.data && notification.data.invoiceNo) {
+      navigate(`/view-invoice/${notification.data.invoiceNo}`);
+      return;
+    }
+    
+    // Check for _id as fallback (original logic)
+    if (notification && notification.data && notification.data._id) {
+      navigate(`/view-invoice/${notification.data._id}`);
+      return;
+    } else if (notification && notification._id) {
+      navigate(`/view-invoice/${notification._id}`);
+      return;
+    }
+    
+    console.error("Invalid invoice data:", notification);
+    alert("Could not retrieve invoice details. Please try again.");
   };
 
   const formatDate = (dateString) => {
@@ -409,58 +427,69 @@ const Dashboard = () => {
           </div>
 
           <div className="user-product-table-container">
-            <table className="user-product-table">
-              <thead>
-                <tr>
-                  <th>Product Name</th>
-                  <th>B2B Price</th>
-                  <th>MRP Price</th>
-                  <th>Share</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredProducts.map((product) => (
-                  <tr key={product._id}>
-                    <td>
-                      <div className="product-name-container">
-                        <input
-                          className="checkbox"
-                          type="checkbox"
-                          onChange={() => handleCheckboxChange(product)}
-                          checked={selectedProducts.some(
-                            (p) => p._id === product._id
-                          )}
-                        />
-                        <div className="product-name-wrapper">
-                          <span
-                            className="product-name"
-                            onClick={() => handleProductNameClick(product)}
-                          >
-                            {product.productName}
-                          </span>
-                          {product.testCode && (
-                            <span className="test-code">
-                              ({product.testCode})
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </td>
-                    <td>₹{product[pricingCategory]}</td>
-                    <td>₹{product.mrp}</td>
-                    <td>
-                      <button
-                        className="whatsapp-btn"
-                        onClick={() => handleWhatsAppShare(product)}
-                      >
-                        <FaWhatsapp size={20} color="#25D366" />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+  <table className="user-product-table">
+    <thead>
+      <tr>
+        <th>Product Name</th>
+        <th>B2B Price</th>
+        <th>MRP Price</th>
+        <th>Share</th>
+      </tr>
+    </thead>
+    <tbody>
+      {isLoading ? (
+        // Show skeleton rows while loading
+        Array(6).fill(0).map((_, index) => (
+          <tr key={index} className="skeleton-row">
+            <td colSpan="4"></td>
+          </tr>
+        ))
+      ) : filteredProducts.length > 0 ? (
+        filteredProducts.map((product) => (
+          <tr key={product._id}>
+            <td>
+              <div className="product-name-container">
+                <input
+                  className="checkbox"
+                  type="checkbox"
+                  onChange={() => handleCheckboxChange(product)}
+                  checked={selectedProducts.some((p) => p._id === product._id)}
+                />
+                <div className="product-name-wrapper">
+                  <span
+                    className="product-name"
+                    onClick={() => handleProductNameClick(product)}
+                  >
+                    {product.productName}
+                  </span>
+                  {product.testCode && (
+                    <span className="test-code">({product.testCode})</span>
+                  )}
+                </div>
+              </div>
+            </td>
+            <td>₹{product[pricingCategory]}</td>
+            <td>₹{product.mrp}</td>
+            <td>
+              <button
+                className="whatsapp-btn"
+                onClick={() => handleWhatsAppShare(product)}
+              >
+                <FaWhatsapp size={20} color="#25D366" />
+              </button>
+            </td>
+          </tr>
+        ))
+      ) : (
+        <tr>
+          <td colSpan="4" style={{ textAlign: "center", padding: "30px" }}>
+            No products found matching your search.
+          </td>
+        </tr>
+      )}
+    </tbody>
+  </table>
+</div>
         </div>
       </div>
 

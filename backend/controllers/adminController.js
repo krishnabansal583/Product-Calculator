@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const Product = require('../models/Product');
+const Invoice = require('../models/Invoice');
 const xlsx = require('xlsx');
 const csv = require('papaparse');
 
@@ -262,5 +263,33 @@ exports.generateInvoice = async (req, res) => {
   } catch (error) {
     console.error('Error in generateInvoice:', error);
     res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+// routes/admin.js (add this new route to your existing admin routes)
+// Get a single invoice by ID
+exports.singleInvoice = async (req, res) => {
+  try {
+    // Validate the invoice ID format
+    if (!req.params.invoiceId || !req.params.invoiceId.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ msg: "Invalid invoice ID format" });
+    }
+
+    const invoice = await Invoice.findById(req.params.invoiceId);
+    
+    if (!invoice) {
+      return res.status(404).json({ msg: "Invoice not found" });
+    }
+    
+    // Check if the user has permission to view this invoice
+    // Assuming you have user info in req.user (set by auth middleware)
+    if (req.user.role !== 'admin' && req.user._id.toString() !== invoice.userId.toString()) {
+      return res.status(403).json({ msg: "Not authorized to view this invoice" });
+    }
+    
+    res.json(invoice);
+  } catch (err) {
+    console.error("Error fetching invoice:", err.message, err.stack);
+    res.status(500).json({ msg: "Server error", error: err.message });
   }
 };

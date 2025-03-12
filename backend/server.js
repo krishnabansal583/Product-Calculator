@@ -6,7 +6,8 @@ const dotenv = require('dotenv');
 const authRoutes = require('./routes/auth');
 const productRoutes = require('./routes/product');
 const adminRoutes = require('./routes/admin');
-
+const notificationRoutes = require("./routes/Notification");
+const invoiceRoutes = require("./routes/invoice");
 // Load environment variables
 dotenv.config();
 
@@ -27,7 +28,8 @@ mongoose
 app.use('/api/auth', authRoutes); // Authentication routes
 app.use('/api/products', productRoutes); // Product routes
 app.use('/api/admin', adminRoutes); // Admin routes
-
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/admin/invoices", invoiceRoutes);
 // Default route
 app.get('/', (req, res) => {
   res.send('Price Calculator Backend is running!');
