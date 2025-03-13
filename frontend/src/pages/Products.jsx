@@ -5,7 +5,9 @@ import './Products.css';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -13,11 +15,14 @@ const Products = () => {
   }, []);
 
   const fetchAllProducts = async () => {
+    setLoading(true);
     try {
       const response = await axios.get('http://localhost:5000/api/admin/get-all-products');
       setProducts(response.data);
+      setLoading(false);
     } catch (error) {
       console.error('Error fetching products:', error);
+      setLoading(false);
     }
   };
 
@@ -32,20 +37,29 @@ const Products = () => {
   const navigateToDashboard = () => {
     navigate('/admindashboard');
   };
+  const navigateToGenerateInvoice = () => {
+    navigate('/generate-invoice');
+  };
 
   const navigateToUsers = () => {
     navigate('/admin/users');
   };
 
+  const filteredProducts = products.filter(product =>
+    product.productName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div className="products-page">
+    <div className="container">
       {/* Navbar */}
-      <div className="admin-navbar">
-        <button className="sidebar-toggle" onClick={toggleSidebar}>
+      <div className="heading">
+        <div className="sidebar-toggle" onClick={toggleSidebar}>
           &#9776;
-        </button>
-        <h1 className="dashboard-title">Admin Dashboard</h1>
-        <button onClick={handleLogout} className="logout-button">Logout</button>
+        </div>
+        <h1>Admin Dashboard</h1>
+        <div className="header-actions">
+          <button onClick={handleLogout} className="logout-btn">Logout</button>
+        </div>
       </div>
 
       {/* Sidebar */}
@@ -55,28 +69,74 @@ const Products = () => {
         </button>
         <ul>
           <li onClick={navigateToDashboard}>Dashboard</li>
+          <li onClick={navigateToGenerateInvoice}>Gernerate Invoice</li>
           <li onClick={navigateToUsers}>Users</li>
         </ul>
       </div>
 
-      <div className="main-contentproducts">
+      <div className="main-content">
         {/* Product List Section */}
-        <div className="product-list-section">
-          <h2 className="form-heading">All Products</h2>
-          <ul className="product-list">
-            {products.map((product) => (
-              <li key={product._id}>
-                <div className="product-info">
-                  <strong>{product.productName}</strong>
-                  <p>B2B Price: {product.b2bPrice}</p>
-                  <p>MRP: {product.mrp}</p>
-                  <p>Sample Type: {product.sampleType}</p>
-                  <p>Fasting Required: {product.fastingRequired ? 'Yes' : 'No'}</p>
-                  <p>Reporting TAT: {product.reportingTAT}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
+        <div className="user-product-section">
+          <h2 className="section-title">All Products</h2>
+          
+          <div className="search-container">
+            <input
+              type="text"
+              className="product-search-bar"
+              placeholder="Search products..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <span className="product-search-icon">🔍</span>
+          </div>
+          
+          {loading ? (
+            <div className="loader-container">
+              <div className="loader"></div>
+              <p className="loader-text">Loading products...</p>
+            </div>
+          ) : (
+            <div className="user-product-table-container">
+              <table className="user-product-table">
+                <thead>
+                  <tr>
+                    <th>Product Name</th>
+                    <th>B2B Price</th>
+                    <th>MRP</th>
+                    <th>Sample Type</th>
+                    <th>Fasting</th>
+                    <th>TAT</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredProducts.length > 0 ? (
+                    filteredProducts.map((product) => (
+                      <tr key={product._id}>
+                        <td>
+                          <div className="product-name-container">
+                            <div className="product-name-wrapper">
+                              <span className="product-name">{product.productName}</span>
+                            </div>
+                          </div>
+                        </td>
+                        <td>₹{product.b2bPrice}</td>
+                        <td>₹{product.mrp}</td>
+                        <td>{product.sampleType}</td>
+                        <td>{product.fastingRequired ? 'Yes' : 'No'}</td>
+                        <td>{product.reportingTAT}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="6" className="no-products">
+                        No products found matching your search.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
     </div>

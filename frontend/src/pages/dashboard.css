@@ -945,6 +945,7 @@
   .user-product-section {
     padding: 15px;
     border-radius: 12px;
+    max-width: 92%;
   }
 
   .calculator-header h3 {
@@ -975,6 +976,7 @@
   .search-bar {
     padding: 10px 15px;
     font-size: 14px;
+    width: 90%;
   }
 
   .search-bar::placeholder {
